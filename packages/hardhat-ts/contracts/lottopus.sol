@@ -21,7 +21,7 @@ contract Lottopus {
   }
 
   uint256 private lastSeededRound;
-  round[] private rounds;
+  round[115792089237316195423570985008687907853269984665640564039457584007913129639935] private rounds;
 
   mapping(address => mapping(uint256 => mapping(uint256 => uint256))) private buyerToRoundToNumberToStake;
 
