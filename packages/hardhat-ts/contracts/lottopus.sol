@@ -16,7 +16,6 @@ contract Lottopus {
     uint256 stakeCount;
     bool isSkipped;
     bool hasPaid;
-    uint256 rewardPrice;
   }
 
   uint256 private lastSeededRound;
@@ -73,15 +72,15 @@ contract Lottopus {
   }
 
   function seed() public {
-    requires(currentRoundNumber() > 0);
-    round previousRound = rounds[currentRoundNumber()-1];
-    requires(previousRound.seedBlock == 0);
-    for (uint256 i = lastSeededRound; i < currentRoundNumber()-1; i++) {
+    require(currentRoundNumber() > 0);
+    round storage previousRound = rounds[currentRoundNumber() - 1];
+    require(previousRound.seedBlock == 0);
+    for (uint256 i = lastSeededRound; i < currentRoundNumber() - 1; i++) {
       rounds[i].isSkipped = true;
       previousRound.stakeCount += rounds[i].stakeCount;
     }
     previousRound.seedBlock = block.number;
-    lastSeededRound = previousRound;
+    lastSeededRound = previousRound.num;
   }
 
   function getMyLottoNow() public view returns (uint256[] memory) {
