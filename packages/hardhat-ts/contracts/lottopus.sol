@@ -89,7 +89,7 @@ contract Lottopus {
   }
 
   function seed() public {
-    require(currentRoundNumber() > 0, "still round zero");
+    require((block.timestamp - tZero) / roundLength > 0, "still round zero");
     round storage previousRound = rounds[currentRoundNumber() - 1];
     require(previousRound.seedBlock == 0, "was already seeded");
     for (uint256 i = lastSeededRound; i < currentRoundNumber() - 1; i++) {
