@@ -44,6 +44,14 @@ const Home: FC = () => {
     setIsModalVisible(true);
   };
 
+  const onClickProvideSeed = async (): Promise<void> => {
+    await lottopusContract?.seed();
+  };
+
+  const onClickDistributeReward = async (): Promise<void> => {
+    await lottopusContract?.pay();
+  };
+
   const handleOk = async (): Promise<void> => {
     setIsModalVisible(false);
     // window.location.href = 'http://localhost:3000/My-Lotto';
@@ -66,7 +74,6 @@ const Home: FC = () => {
   const { Countdown } = Statistic;
 
   const [currentRoundNumber] = useContractReader(lottopusContract, lottopusContract?.currentRoundNumber, [], undefined);
-
   const [endTime] = useContractReader(
     lottopusContract,
     lottopusContract?.roundEndTime,
@@ -80,6 +87,7 @@ const Home: FC = () => {
       <Modal title="Confirm purchase" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Lotto No. {input}</p>
       </Modal>
+
       <Row justify="center">
         <Title level={2}>Countdown</Title>
       </Row>
@@ -87,7 +95,12 @@ const Home: FC = () => {
         <Countdown title="" value={safeEndTime} onFinish={onFinish} />
       </Row>
       <Row justify="center" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
-        <Button type="primary">Trigger Random</Button>
+        <Button type="primary" style={{ marginRight: '8px' }} onClick={onClickProvideSeed}>
+          Provide Seed
+        </Button>
+        <Button type="primary" onClick={onClickDistributeReward}>
+          Distribute Reward
+        </Button>
       </Row>
       <Announcement />
 

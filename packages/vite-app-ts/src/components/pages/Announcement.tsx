@@ -1,7 +1,7 @@
 import { Card, Row, Col, Typography, Divider, Image } from 'antd';
 import { useContractReader } from 'eth-hooks';
 import { useEthersContext } from 'eth-hooks/context';
-import React, { FC } from 'react';
+import React, { FC, ReactElement } from 'react';
 
 import ball from '../../images/blue.png';
 import { useAppContracts } from '../contractContext';
@@ -17,6 +17,13 @@ const Announcement: FC = () => {
 
   const [currentRoundNumber] = useContractReader(lottopusContract, lottopusContract?.currentRoundNumber, [], undefined);
 
+  const [winningNumber] = useContractReader(
+    lottopusContract,
+    lottopusContract?.winningNumber,
+    [currentRoundNumber ? currentRoundNumber : 0],
+    undefined
+  );
+
   const [endTime] = useContractReader(
     lottopusContract,
     lottopusContract?.roundEndTime,
@@ -25,6 +32,34 @@ const Announcement: FC = () => {
   );
 
   const safeEndTime = new Date(!!endTime ? endTime.toNumber() * 1000 : 0);
+
+  const renderWinningDigit = (d: string): ReactElement => {
+    return (
+      <Col style={{ position: 'relative', textAlign: 'center' }}>
+        <Image width={50} src={ball} />
+        <Text
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: ' translate(-50%, -50%)',
+            color: 'white',
+          }}>
+          <Title level={3}>{d}</Title>
+        </Text>
+      </Col>
+    );
+  };
+
+  const renderWinningNumber = (): ReactElement[] => {
+    const safeWinningNumber = !!winningNumber ? winningNumber?.toNumber() : 0;
+
+    return safeWinningNumber
+      .toString()
+      .padStart(2, '0')
+      .split('')
+      .map((digit) => renderWinningDigit(digit));
+  };
 
   return (
     <div>
@@ -46,32 +81,7 @@ const Announcement: FC = () => {
               Winning Number:
             </Text>
           </Col>
-          <Col style={{ position: 'relative', textAlign: 'center' }}>
-            <Image width={50} src={ball} />
-            <Text
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: ' translate(-50%, -50%)',
-                color: 'white',
-              }}>
-              <Title level={3}>1</Title>
-            </Text>
-          </Col>
-          <Col style={{ position: 'relative', textAlign: 'center' }}>
-            <Image width={50} src={ball} />
-            <Text
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: ' translate(-50%, -50%)',
-                color: 'white',
-              }}>
-              <Title level={3}>4</Title>
-            </Text>
-          </Col>
+          {renderWinningNumber()}
         </Row>
         <Divider />
         <Row justify="center">
