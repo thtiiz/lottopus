@@ -1,5 +1,8 @@
-import { Row, Col, Statistic, Button, Image } from 'antd';
+import { faker } from '@faker-js/faker';
+import { Row, Col, Statistic, Button } from 'antd';
 import React, { FC } from 'react';
+
+import { HistogramChart } from '../main/HistogramChart';
 
 const Home: FC = () => {
   const onFinish = () => () => {
@@ -9,7 +12,8 @@ const Home: FC = () => {
   const { Countdown } = Statistic;
 
   const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
-
+  const labels = Array.from(Array(100).keys());
+  const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
   return (
     <div>
       <Row>
@@ -22,7 +26,7 @@ const Home: FC = () => {
         <Button type="primary">Trigger Random</Button>
       </Row>
 
-      <Image width={200} src="https://datavizproject.com/wp-content/uploads/2015/10/1-Line-Chart.png" />
+      <HistogramChart labels={labels} data={data} />
       <Row justify="center">
         <Button type="primary">Buy</Button>
       </Row>
