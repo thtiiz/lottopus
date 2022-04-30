@@ -1,11 +1,15 @@
+//SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-//SPDX-License-Identifier: MIT
-
 contract Lottopus {
-  struct Lotto {
-    string lottoNumber;
-    uint256 buyTime;
+  uint256 private tZero;
+  uint256 public constant roundLength = 500;
+  uint256 public constant lottoPrice = 20;
+
+  struct round {
+    uint256 num;
+    uint seederBlock;
+    systemLotto[] lottos;
   }
 
   struct systemLotto {
@@ -15,17 +19,34 @@ contract Lottopus {
   }
 
   uint256 private rewardNow;
-  uint256 public lottoPrice;
+  uint256 private lottoPrice;
 
   systemLotto[] private lottoNows;
 
   string private winnerNumber;
 
-  mapping(address => Lotto[]) private myLottoNows;
-  mapping(address => Lotto[]) private myLottos;
+  round[] private rounds;
+
+  mapping(address => mapping(uint256 => systemLotto[]) private myLottoNows;
+  mapping(address => systemLotto[]) private myLottos;
   mapping(string => address[]) private lottoNumberOwners;
 
-  constructor() {}
+  constructor() {
+    tZero = now;
+    currentRound = 0;
+  }
+
+  function roundStartTime(int num) public view returns (uint256) {
+    return (num * roundLength) + tZero;
+  }
+
+  function roundEndTime(int num) public view returns (uint256) {
+    return (num * roundLength) + tZero;
+  }
+
+  function currentRoundNumber() public view returns (uint256) {
+    return (now - tZero) / roundLength;
+  }
 
   function getMyLottoNow(address my) public view returns (Lotto[] memory) {
     return myLottoNows[my];
@@ -36,7 +57,8 @@ contract Lottopus {
   }
 
   function buyLotto(address buyer, string memory number) public {
-    lottoNows.push(systemLotto(number, now, buyer));
+    round currentRound = round[currentRoundNumber()];
+    currentRound.lottos.push(systemLotto(number, now, buyer));
     myLottos[buyer].push(Lotto(number, now));
     myLottoNows[buyer].push(Lotto(number, now));
   }
