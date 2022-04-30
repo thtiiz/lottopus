@@ -2,6 +2,8 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 contract Lottopus {
+  event BuyLotto(address indexed buyer);
+
   uint256 private tZero;
   uint256 public constant roundLength = 500;
   uint256 public constant lottoPrice = 20;
@@ -49,14 +51,16 @@ contract Lottopus {
   }
 
   function buyLotto(uint256 number) public payable {
-    require(msg.value == lottoPrice);
-    require(number <= maxLotto);
+    require(msg.value == lottoPrice, "invalid price");
+    require(number <= maxLotto, "invalid number");
     round storage _currentRound = rounds[currentRoundNumber()];
     _currentRound.lottoToBuyerToStake[number][msg.sender]++;
     _currentRound.lottoToBuyers[number].push(msg.sender);
     _currentRound.stakeCount++;
     _currentRound.myRoundLottos[msg.sender].push(number);
     buyerToRoundToNumberToStake[msg.sender][currentRoundNumber()][number] += 1;
+
+    emit BuyLotto(msg.sender);
   }
 
   function pay() public {

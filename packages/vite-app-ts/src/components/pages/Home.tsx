@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { Row, Col, Statistic, Button, Input, Modal, Typography } from 'antd';
+import { useContractReader } from 'eth-hooks';
+import { useEthersContext } from 'eth-hooks/context';
 import React, { FC, useState } from 'react';
 
+import { useAppContracts } from '../contractContext';
 import { HistogramChart } from '../main/HistogramChart';
 
 const { Title } = Typography;
@@ -10,6 +13,11 @@ const labels = Array.from(Array(100).keys());
 const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
 
 const Home: FC = () => {
+  const ethersContext = useEthersContext();
+  const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
+
+  const [buyLotto] = useContractReader(lottopusContract, lottopusContract?.buyLotto);
+
   const [input, setInput] = useState('');
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -18,9 +26,11 @@ const Home: FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = (): void => {
+  const handleOk = async (): Promise<void> => {
     setIsModalVisible(false);
-    window.location.href = 'http://localhost:3000/My-Lotto';
+    // window.location.href = 'http://localhost:3000/My-Lotto';
+    const trans = await lottopusContract?.buyLotto(Number(input), { value: 20 });
+    // console.log(trans);
   };
 
   const handleCancel = (): void => {

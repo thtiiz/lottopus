@@ -1,9 +1,13 @@
-import { Row, Col, Modal, Typography } from 'antd';
-import React, { FC, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 const { Title } = Typography;
+import { Col, Modal, Row, Typography } from 'antd';
+import { useEthersContext } from 'eth-hooks/context';
 
+import { useAppContracts } from '../contractContext';
 import LottoCard from '../lottoCard/LottoCard';
+
+import { useContractReader } from 'eth-hooks';
 
 const Home: FC = () => {
   const [lottos, setLottos] = useState([
@@ -22,6 +26,30 @@ const Home: FC = () => {
     setIsModalVisible(false);
   };
 
+  const ethersContext = useEthersContext();
+  const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
+
+  const [myLottoNow] = useContractReader(
+    lottopusContract,
+    lottopusContract?.getMyLottoNow,
+    [],
+    lottopusContract?.filters.BuyLotto(ethersContext.account)
+  );
+
+  console.log(myLottoNow);
+
+  const myLottos = myLottoNow
+    ?.map((lotto, i) => ({ lottoNumber: i, purchasedAmount: lotto.toNumber() }))
+    .filter(({ purchasedAmount }) => purchasedAmount > 0);
+
+  const renderLottos = useCallback(() => {
+    return myLottos?.map(({ lottoNumber, purchasedAmount }) => (
+      <Col key={lottoNumber} span={8}>
+        <LottoCard lottoNumber={lottoNumber} purchasedAmount={purchasedAmount} />
+      </Col>
+    ));
+  }, [myLottos]);
+
   const handleCancel = (): void => {
     // setIsModalVisible(false);
   };
@@ -34,21 +62,7 @@ const Home: FC = () => {
           {lottos[0].reward} * {lottos[0].amount} = {lottos[0].reward * lottos[0].amount} THB
         </p>
       </Modal>
-      <Row gutter={[16, 16]}>
-        {/* TODO: LOOP here */}
-        <Col span={8} onClick={showModal}>
-          <LottoCard lottoNumber={67} purchasedAmount={2} />
-        </Col>
-        <Col span={8} onClick={showModal}>
-          <LottoCard lottoNumber={23} purchasedAmount={1} />
-        </Col>
-        <Col span={8} onClick={showModal}>
-          <LottoCard lottoNumber={99} purchasedAmount={9} />
-        </Col>
-        <Col span={8} onClick={showModal}>
-          <LottoCard lottoNumber={44} purchasedAmount={6} />
-        </Col>
-      </Row>
+      <Row gutter={[16, 16]}>{renderLottos()}</Row>
     </>
   );
 };
