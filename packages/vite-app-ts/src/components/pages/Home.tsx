@@ -25,7 +25,6 @@ const Home: FC = () => {
     undefined
     // lottopusContract?.filters.BuyLotto(undefined)
   );
-  // console.log(currentStake);
 
   const histogramLabels = useMemo(
     () => Array.from(Array((!!currentStake ? currentStake : []).length).keys()),
@@ -43,6 +42,14 @@ const Home: FC = () => {
 
   const showModal = (): void => {
     setIsModalVisible(true);
+  };
+
+  const onClickProvideSeed = async (): Promise<void> => {
+    await lottopusContract?.seed();
+  };
+
+  const onClickDistributeReward = async (): Promise<void> => {
+    await lottopusContract?.pay();
   };
 
   const handleOk = async (): Promise<void> => {
@@ -66,20 +73,34 @@ const Home: FC = () => {
 
   const { Countdown } = Statistic;
 
-  const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
+  const [currentRoundNumber] = useContractReader(lottopusContract, lottopusContract?.currentRoundNumber, [], undefined);
+  const [endTime] = useContractReader(
+    lottopusContract,
+    lottopusContract?.roundEndTime,
+    [currentRoundNumber ? currentRoundNumber : 0],
+    undefined
+  );
+
+  const safeEndTime = !!endTime ? endTime.toNumber() * 1000 : 0;
   return (
     <>
       <Modal title="Confirm purchase" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Lotto No. {input}</p>
       </Modal>
+
       <Row justify="center">
         <Title level={2}>Countdown</Title>
       </Row>
       <Row justify="center">
-        <Countdown title="" value={deadline} onFinish={onFinish} />
+        <Countdown title="" value={safeEndTime} onFinish={onFinish} />
       </Row>
       <Row justify="center" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
-        <Button type="primary">Trigger Random</Button>
+        <Button type="primary" style={{ marginRight: '8px' }} onClick={onClickProvideSeed}>
+          Provide Seed
+        </Button>
+        <Button type="primary" onClick={onClickDistributeReward}>
+          Distribute Reward
+        </Button>
       </Row>
       <Announcement />
 

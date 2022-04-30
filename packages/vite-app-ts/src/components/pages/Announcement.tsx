@@ -1,12 +1,66 @@
 import { Card, Row, Col, Typography, Divider, Image } from 'antd';
-import React, { FC } from 'react';
+import { useContractReader } from 'eth-hooks';
+import { useEthersContext } from 'eth-hooks/context';
+import React, { FC, ReactElement } from 'react';
 
 import ball from '../../images/blue.png';
+import { useAppContracts } from '../contractContext';
 import PrizeBox from '../prizeBox/PrizeBox';
 
 const { Title, Text } = Typography;
 
 const Announcement: FC = () => {
+  const ethersContext = useEthersContext();
+  const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
+
+  const [currentPool] = useContractReader(lottopusContract, lottopusContract?.getCurrentRoundPool, [], undefined);
+
+  const [currentRoundNumber] = useContractReader(lottopusContract, lottopusContract?.currentRoundNumber, [], undefined);
+
+  const [winningNumber] = useContractReader(
+    lottopusContract,
+    lottopusContract?.winningNumber,
+    [currentRoundNumber ? currentRoundNumber : 0],
+    undefined
+  );
+
+  const [endTime] = useContractReader(
+    lottopusContract,
+    lottopusContract?.roundEndTime,
+    [currentRoundNumber ? currentRoundNumber : 0],
+    undefined
+  );
+
+  const safeEndTime = new Date(!!endTime ? endTime.toNumber() * 1000 : 0);
+
+  const renderWinningDigit = (d: string): ReactElement => {
+    return (
+      <Col style={{ position: 'relative', textAlign: 'center' }}>
+        <Image width={50} src={ball} />
+        <Text
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: ' translate(-50%, -50%)',
+            color: 'white',
+          }}>
+          <Title level={3}>{d}</Title>
+        </Text>
+      </Col>
+    );
+  };
+
+  const renderWinningNumber = (): ReactElement[] => {
+    const safeWinningNumber = !!winningNumber ? winningNumber?.toNumber() : 0;
+
+    return safeWinningNumber
+      .toString()
+      .padStart(2, '0')
+      .split('')
+      .map((digit) => renderWinningDigit(digit));
+  };
+
   return (
     <div>
       <Card style={{}}>
@@ -17,7 +71,7 @@ const Announcement: FC = () => {
         </Row>
         <Row justify="center">
           <Title level={3} style={{ color: '#00BFFF' }}>
-            Drawn Apr 30, 2022, 7:00 AM
+            Drawn {safeEndTime.toLocaleString()}
           </Title>
         </Row>
         <Divider />
@@ -27,32 +81,7 @@ const Announcement: FC = () => {
               Winning Number:
             </Text>
           </Col>
-          <Col style={{ position: 'relative', textAlign: 'center' }}>
-            <Image width={50} src={ball} />
-            <Text
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: ' translate(-50%, -50%)',
-                color: 'white',
-              }}>
-              <Title level={3}>1</Title>
-            </Text>
-          </Col>
-          <Col style={{ position: 'relative', textAlign: 'center' }}>
-            <Image width={50} src={ball} />
-            <Text
-              style={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: ' translate(-50%, -50%)',
-                color: 'white',
-              }}>
-              <Title level={3}>4</Title>
-            </Text>
-          </Col>
+          {renderWinningNumber()}
         </Row>
         <Divider />
         <Row justify="center">
@@ -61,11 +90,11 @@ const Announcement: FC = () => {
               <Title level={3}>Prize pool</Title>
             </Row>
             <Row justify="center">
-              <Title style={{ color: '#00BFFF' }}>100 ETH</Title>
+              <Title style={{ color: '#00BFFF' }}>{!!currentPool ? currentPool.toNumber() : 0} ETH</Title>
             </Row>
-            <Row justify="center">
+            {/* <Row justify="center">
               <Title level={3}>Total players: 77</Title>
-            </Row>
+            </Row> */}
           </Col>
         </Row>
         <Divider />
