@@ -40,7 +40,7 @@ contract Lottopus {
     return ((num+1) * roundLength) + tZero;
   }
 
-  function currentRoundNumber() public view returns (uint256) {
+  function currentRoundNumber() public returns (uint256) {
     return (block.timestamp - tZero) / roundLength;
   }
 
@@ -69,7 +69,7 @@ contract Lottopus {
   }
 
   function pay() public {
-    require(currentRoundNumber() > 0, "still round zero");
+    require((block.timestamp - tZero) / roundLength > 0, "still round zero");
     uint256 previousRoundNum = currentRoundNumber() - 1;
     round storage previousRound = rounds[previousRoundNum];
     require(previousRound.seedBlock != 0, "must seed first");
