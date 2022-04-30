@@ -16,6 +16,7 @@ contract Lottopus {
     uint256 stakeCount;
     bool isSkipped;
     bool hasPaid;
+    uint256 rewardPrice;
   }
 
   uint256 private lastSeededRound;
@@ -24,7 +25,7 @@ contract Lottopus {
   mapping(address => mapping(uint256 => mapping(uint256 => uint256))) private buyerToRoundToNumberToStake;
 
   constructor() {
-    tZero = now;
+    tZero = block.timestamp;
   }
 
   function roundStartTime(uint256 num) public view returns (uint256) {
@@ -36,7 +37,7 @@ contract Lottopus {
   }
 
   function currentRoundNumber() public view returns (uint256) {
-    return (now - tZero) / roundLength;
+    return (block.timestamp - tZero) / roundLength;
   }
 
   function winningNumber(uint256 _round) public view returns (uint256) {
@@ -93,5 +94,9 @@ contract Lottopus {
 
   function getMyLottoByRound(uint256 r) public view returns (uint256[] memory) {
     return rounds[r].myRoundLottos[msg.sender];
+  }
+
+  function getRewardByRound(uint256 r) public view returns (uint256) {
+    return rounds[r].rewardPrice;
   }
 }
