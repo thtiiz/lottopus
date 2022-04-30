@@ -75,6 +75,7 @@ contract Lottopus {
     require(!previousRound.hasPaid);
     require(!previousRound.isSkipped);
     address[] memory buyers = previousRound.lottoToBuyers[winningNumber(previousRoundNum)];
+    require(buyers.length > 0);
     uint256 seederReward = getRoundPool(previousRoundNum) * (seederSharePercent / 100.0);
     uint256 payerReward = getRoundPool(previousRoundNum) * (payerSharePercent / 100.0);
     uint256 payPerStake = (getRoundPool(previousRoundNum) - (seederReward + payerReward)) / buyers.length;
