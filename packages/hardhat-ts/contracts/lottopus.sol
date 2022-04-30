@@ -19,13 +19,10 @@ contract Lottopus {
 
   round[] private rounds;
 
-  uint256 private currentRound;
-
   mapping(address => mapping(uint256 => mapping(uint256 => uint256))) private buyerToRoundToNumberToStake;
 
   constructor() {
     tZero = now;
-    currentRound = 0;
   }
 
   function roundStartTime(uint256 num) public view returns (uint256) {
