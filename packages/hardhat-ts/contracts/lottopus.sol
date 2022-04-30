@@ -12,6 +12,7 @@ contract Lottopus {
     uint256 seedBlock;
     mapping(uint256 => mapping(address => uint256)) lottoToBuyerToStake;
     mapping(uint256 => address[]) lottoToBuyers;
+    mapping(address => uint256[]) myRoundLottos;
     uint256 stakeCount;
     bool hasPaid;
   }
@@ -53,6 +54,7 @@ contract Lottopus {
     _currentRound.lottoToBuyerToStake[number][msg.sender]++;
     _currentRound.lottoToBuyers[number].push(msg.sender);
     _currentRound.stakeCount++;
+    _currentRound.myRoundLottos[msg.sender].push(number);
     buyerToRoundToNumberToStake[msg.sender][currentRoundNumber()][number] += 1;
   }
 
@@ -64,7 +66,7 @@ contract Lottopus {
       address[] memory buyers = rounds[i].lottoToBuyers[winningNumber(i)];
       uint256 payPerStake = (rounds[i].stakeCount * lottoPrice) / buyers.length;
       for (uint256 b = 0; b < buyers.length; b++) {
-        payable(buyers[b]).send(payPerStake);
+        payable(buyers[b]).transfer(payPerStake);
       }
       rounds[i].hasPaid = true;
     }
@@ -82,14 +84,14 @@ contract Lottopus {
   }
 
   function getMyLottoNow() public view returns (uint256[] memory) {
-    uint256[] ret = new uint256[](maxLotto+1);
-    for (uint i = 0; i <= maxLotto; i++) {
+    uint256[] memory ret = new uint256[](maxLotto + 1);
+    for (uint256 i = 0; i <= maxLotto; i++) {
       ret[i] = buyerToRoundToNumberToStake[msg.sender][currentRoundNumber()][i];
     }
     return ret;
   }
 
-  function getAllLotto() public view returns (round[] memory) {
-    return rounds;
+  function getMyLottoByRound(uint256 r) public view returns (uint256[] memory) {
+    return rounds[r].myRoundLottos[msg.sender];
   }
 }
