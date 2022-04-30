@@ -25,7 +25,6 @@ const Home: FC = () => {
     undefined
     // lottopusContract?.filters.BuyLotto(undefined)
   );
-  // console.log(currentStake);
 
   const histogramLabels = useMemo(
     () => Array.from(Array((!!currentStake ? currentStake : []).length).keys()),
@@ -66,7 +65,16 @@ const Home: FC = () => {
 
   const { Countdown } = Statistic;
 
-  const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
+  const [currentRoundNumber] = useContractReader(lottopusContract, lottopusContract?.currentRoundNumber, [], undefined);
+
+  const [endTime] = useContractReader(
+    lottopusContract,
+    lottopusContract?.roundEndTime,
+    [currentRoundNumber ? currentRoundNumber : 0],
+    undefined
+  );
+
+  const safeEndTime = !!endTime ? endTime.toNumber() * 1000 : 0;
   return (
     <>
       <Modal title="Confirm purchase" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
@@ -76,7 +84,7 @@ const Home: FC = () => {
         <Title level={2}>Countdown</Title>
       </Row>
       <Row justify="center">
-        <Countdown title="" value={deadline} onFinish={onFinish} />
+        <Countdown title="" value={safeEndTime} onFinish={onFinish} />
       </Row>
       <Row justify="center" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
         <Button type="primary">Trigger Random</Button>
