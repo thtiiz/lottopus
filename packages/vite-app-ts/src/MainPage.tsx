@@ -70,6 +70,7 @@ export const MainPage: FC = () => {
 
   // init contracts
   const yourContract = useAppContracts('YourContract', ethersContext.chainId);
+  const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
   const mainnetDai = useAppContracts('DAI', NETWORKS.mainnet.chainId);
 
   // keep track of a variable from the contract in the local React state:
@@ -114,6 +115,17 @@ export const MainPage: FC = () => {
       ),
     },
     pages: [
+      {
+        name: 'Lottopus',
+        element: (
+          <GenericContract
+            contractName="Lottopus"
+            contract={lottopusContract}
+            mainnetAdaptor={scaffoldAppProviders.mainnetAdaptor}
+            blockExplorer={scaffoldAppProviders.targetNetwork.blockExplorer}
+          />
+        ),
+      },
       {
         name: 'Dai',
         element: (

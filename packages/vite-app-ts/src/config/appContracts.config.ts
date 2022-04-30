@@ -32,6 +32,8 @@ export const appContractsConfig = () => {
         hardhatContractsJson
       ),
 
+      Lottopus: createConnectorForHardhatContract('Lottopus', hardhatContracts.Lottopus__factory, hardhatContractsJson),
+
       YourNFT: createConnectorForHardhatContract('YourNFT', hardhatContracts.YourNFT__factory, hardhatContractsJson),
 
       // --------------------------------------------------
