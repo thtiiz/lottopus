@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { Row, Col, Statistic, Button } from 'antd';
+import { Row, Col, Statistic, Button, Input } from 'antd';
 import React, { FC } from 'react';
 
 import { HistogramChart } from '../main/HistogramChart';
@@ -29,7 +29,12 @@ const Home: FC = () => {
 
       <HistogramChart labels={labels} data={data} />
       <Row justify="center">
-        <Button type="primary">Buy</Button>
+        <Col span={8}>
+          <Input placeholder="type 0-99" />
+        </Col>
+        <Col>
+          <Button type="primary">Buy</Button>
+        </Col>
       </Row>
     </div>
   );
