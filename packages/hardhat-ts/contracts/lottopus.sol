@@ -5,7 +5,7 @@ contract Lottopus {
   event BuyLotto(address indexed buyer);
 
   uint private tZero;
-  uint256 public constant roundLength = 500;
+  uint256 public constant roundLength = 30;
   uint256 public constant lottoPrice = 20;
   uint256 public constant maxLotto = 99;
   uint256 public constant seederSharePercent = 1;
@@ -76,7 +76,12 @@ contract Lottopus {
     require(!previousRound.hasPaid, "already paid");
     require(!previousRound.isSkipped, "the round was skipped");
     address[] memory buyers = previousRound.lottoToBuyers[winningNumber(previousRoundNum)];
-    require(buyers.length > 0, "noone won");
+    if (buyers.length == 0) {
+      previousRound.hasPaid = true;
+      previousRound.winningNumber = winningNumber(previousRoundNum);
+      rounds[currentRoundNumber()] += previousRound.stakeCount;
+      return;
+    }
     uint256 seederReward = getRoundPool(previousRoundNum) * (seederSharePercent / 100.0);
     uint256 payerReward = getRoundPool(previousRoundNum) * (payerSharePercent / 100.0);
     uint256 payPerStake = (getRoundPool(previousRoundNum) - (seederReward + payerReward)) / buyers.length;
