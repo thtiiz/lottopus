@@ -4,7 +4,7 @@ pragma solidity >=0.8.0 <0.9.0;
 contract Lottopus {
   event BuyLotto(address indexed buyer);
 
-  uint private tZero;
+  uint256 private tZero;
   uint256 public constant roundLength = 30;
   uint256 public constant lottoPrice = 20;
   uint256 public constant maxLotto = 99;
@@ -37,7 +37,7 @@ contract Lottopus {
   }
 
   function roundEndTime(uint256 num) public view returns (uint256) {
-    return ((num+1) * roundLength) + tZero;
+    return ((num + 1) * roundLength) + tZero;
   }
 
   function currentRoundNumber() public returns (uint256) {
@@ -79,7 +79,7 @@ contract Lottopus {
     if (buyers.length == 0) {
       previousRound.hasPaid = true;
       previousRound.winningNumber = winningNumber(previousRoundNum);
-      rounds[currentRoundNumber()] += previousRound.stakeCount;
+      rounds[currentRoundNumber()].stakeCount += previousRound.stakeCount;
       return;
     }
     uint256 seederReward = getRoundPool(previousRoundNum) * (seederSharePercent / 100.0);
@@ -136,11 +136,11 @@ contract Lottopus {
     return ret;
   }
 
-  function blockTimestamp() public view returns (uint) {
+  function blockTimestamp() public view returns (uint256) {
     return block.timestamp;
   }
 
-  function tZero() public view returns (uint) {
+  function tZero() public view returns (uint256) {
     return tZero;
   }
 }
