@@ -10,7 +10,6 @@ contract Lottopus {
   uint256 public constant payerSharePercent = 1;
 
   struct round {
-    uint256 num;
     uint256 seedBlock;
     address seeder;
     mapping(uint256 => mapping(address => uint256)) lottoToBuyerToStake;
@@ -87,7 +86,7 @@ contract Lottopus {
       previousRound.stakeCount += rounds[i].stakeCount;
     }
     previousRound.seedBlock = block.number;
-    lastSeededRound = previousRound.num;
+    lastSeededRound = currentRoundNumber() - 1;
     previousRound.seeder = msg.sender;
   }
 
