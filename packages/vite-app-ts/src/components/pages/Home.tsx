@@ -4,6 +4,9 @@ import React, { FC } from 'react';
 
 import { HistogramChart } from '../main/HistogramChart';
 
+const labels = Array.from(Array(100).keys());
+const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
+
 const Home: FC = () => {
   const onFinish = () => () => {
     return null;
@@ -12,8 +15,6 @@ const Home: FC = () => {
   const { Countdown } = Statistic;
 
   const deadline = Date.now() + 1000 * 60 * 60 * 24 * 2 + 1000 * 30; // Moment is also OK
-  const labels = Array.from(Array(100).keys());
-  const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
   return (
     <div>
       <Row>
