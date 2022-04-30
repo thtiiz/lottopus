@@ -37,7 +37,7 @@ contract Lottopus {
   }
 
   function roundEndTime(uint256 num) public view returns (uint256) {
-    return (num * roundLength) + tZero;
+    return ((num+1) * roundLength) + tZero;
   }
 
   function currentRoundNumber() public view returns (uint256) {
