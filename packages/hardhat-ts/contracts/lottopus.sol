@@ -109,4 +109,8 @@ contract Lottopus {
   function getRoundPool(uint256 r) public view returns (uint256) {
     return rounds[r].stakeCount * lottoPrice;
   }
+
+  function getCurrentRoundPool() public view returns (uint256) {
+    return rounds[currentRoundNumber()].stakeCount * lottoPrice;
+  }
 }

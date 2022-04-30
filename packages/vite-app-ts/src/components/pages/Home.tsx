@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
 import { Row, Col, Statistic, Button, Input, Modal, Typography } from 'antd';
-import { useContractReader } from 'eth-hooks';
 import { useEthersContext } from 'eth-hooks/context';
 import React, { FC, useState } from 'react';
 
@@ -15,8 +14,6 @@ const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
 const Home: FC = () => {
   const ethersContext = useEthersContext();
   const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
-
-  const [buyLotto] = useContractReader(lottopusContract, lottopusContract?.buyLotto);
 
   const [input, setInput] = useState('');
 
