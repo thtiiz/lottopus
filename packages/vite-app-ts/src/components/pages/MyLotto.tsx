@@ -34,18 +34,18 @@ const Home: FC = () => {
           {lottos[0].reward} * {lottos[0].amount} = {lottos[0].reward * lottos[0].amount} THB
         </p>
       </Modal>
-      <Row gutter={16}>
+      <Row gutter={[16, 16]}>
         {/* TODO: LOOP here */}
         <Col span={8} onClick={showModal}>
           <LottoCard lottoNumber={67} purchasedAmount={2} />
         </Col>
-        <Col span={8}>
+        <Col span={8} onClick={showModal}>
           <LottoCard lottoNumber={23} purchasedAmount={1} />
         </Col>
-        <Col span={8}>
+        <Col span={8} onClick={showModal}>
           <LottoCard lottoNumber={99} purchasedAmount={9} />
         </Col>
-        <Col span={8}>
+        <Col span={8} onClick={showModal}>
           <LottoCard lottoNumber={44} purchasedAmount={6} />
         </Col>
       </Row>

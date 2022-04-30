@@ -1,8 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { Row, Col, Statistic, Button, Input, Modal } from 'antd';
+import { Row, Col, Statistic, Button, Input, Modal, Typography } from 'antd';
 import React, { FC, useState } from 'react';
 
 import { HistogramChart } from '../main/HistogramChart';
+
+const { Title } = Typography;
 
 const labels = Array.from(Array(100).keys());
 const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
@@ -42,14 +44,17 @@ const Home: FC = () => {
         <p>Lotto No. {input}</p>
       </Modal>
       <Row justify="center">
-        <Countdown title="Countdown" value={deadline} onFinish={onFinish} />
+        <Title level={2}>Countdown</Title>
       </Row>
       <Row justify="center">
+        <Countdown title="" value={deadline} onFinish={onFinish} />
+      </Row>
+      <Row justify="center" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
         <Button type="primary">Trigger Random</Button>
       </Row>
 
       <HistogramChart labels={labels} data={data} />
-      <Row justify="center">
+      <Row justify="center" gutter={8}>
         <Col span={8}>
           <Input placeholder="type 0-99" onChange={handleChange} type="number" />
         </Col>

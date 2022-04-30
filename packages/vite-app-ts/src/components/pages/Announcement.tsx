@@ -20,7 +20,7 @@ const Announcement: FC = () => {
           </Title>
         </Row>
         <Divider />
-        <Row>
+        <Row gutter={16}>
           <Col>
             <Text strong style={{ fontSize: '18px' }}>
               Winning Number:
