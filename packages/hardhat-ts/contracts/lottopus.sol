@@ -130,4 +130,8 @@ contract Lottopus {
     }
     return ret;
   }
+
+  function blockTimestamp() public view returns (uint) {
+    return block.timestamp;
+  }
 }
