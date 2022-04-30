@@ -1,12 +1,12 @@
 import '~~/styles/main-page.css';
 // import { GenericContract } from 'eth-components/ant';
-import { useBalance, useEthersAdaptorFromProviderOrSigners } from 'eth-hooks';
+import { GenericContract } from 'eth-components/ant';
+import { useEthersAdaptorFromProviderOrSigners } from 'eth-hooks';
 import { useEthersContext } from 'eth-hooks/context';
 import { useDexEthPrice } from 'eth-hooks/dapps';
 import { asEthersAdaptor } from 'eth-hooks/functions';
 import React, { FC, useEffect, useState } from 'react';
 import { BrowserRouter, Switch } from 'react-router-dom';
-import { NETWORKS } from 'scaffold-common/src/constants';
 
 import { MainPageHeader, createPagesAndTabs, TContractPageList } from './components/main';
 import { useScaffoldHooksExamples as useScaffoldHooksExamples } from './components/main/hooks/useScaffoldHooksExamples';
@@ -43,6 +43,8 @@ export const MainPage: FC = () => {
 
   // 🦊 Get your web3 ethers context from current providers
   const ethersContext = useEthersContext();
+
+  const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
 
   // if no user is found use a burner wallet on localhost as fallback if enabled
   useBurnerFallback(scaffoldAppProviders, BURNER_FALLBACK_ENABLED);
@@ -105,17 +107,17 @@ export const MainPage: FC = () => {
         name: 'My-Lotto',
         element: <MyLotto />,
       },
-      // {
-      //   name: 'Lottopus',
-      //   element: (
-      //     <GenericContract
-      //       contractName="Lottopus"
-      //       contract={lottopusContract}
-      //       mainnetAdaptor={scaffoldAppProviders.mainnetAdaptor}
-      //       blockExplorer={scaffoldAppProviders.targetNetwork.blockExplorer}
-      //     />
-      //   ),
-      // },
+      {
+        name: 'Lottopus',
+        element: (
+          <GenericContract
+            contractName="Lottopus"
+            contract={lottopusContract}
+            mainnetAdaptor={scaffoldAppProviders.mainnetAdaptor}
+            blockExplorer={scaffoldAppProviders.targetNetwork.blockExplorer}
+          />
+        ),
+      },
     ],
   };
   const { pageElements, menuElement } = createPagesAndTabs(pageList, route, setRoute);

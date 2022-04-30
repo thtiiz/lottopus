@@ -1,23 +1,42 @@
-import { faker } from '@faker-js/faker';
 import { Row, Col, Statistic, Button, Input, Modal, Typography } from 'antd';
-import { useEventListener } from 'eth-hooks';
+import { useContractReader } from 'eth-hooks';
 import { useEthersContext } from 'eth-hooks/context';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 
 import { useAppContracts } from '../contractContext';
 import { HistogramChart } from '../main/HistogramChart';
+
 import Announcement from './Announcement';
 
 const { Title } = Typography;
 
-const labels = Array.from(Array(100).keys());
-const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
+// const data = labels.map(() => faker.datatype.number({ min: 15, max: 100 }));
 
 const Home: FC = () => {
   const ethersContext = useEthersContext();
   const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
-  const [buyLotto] = useEventListener(lottopusContract, lottopusContract?.filters.BuyLotto(ethersContext.account), 0);
-  console.log(buyLotto);
+  // const [buyLotto] = useEventListener(lottopusContract, lottopusContract?.filters.BuyLotto(ethersContext.account), 0);
+  // console.log(buyLotto);
+
+  const [currentStake] = useContractReader(
+    lottopusContract,
+    lottopusContract?.getCurrentStakes,
+    [],
+    undefined
+    // lottopusContract?.filters.BuyLotto(undefined)
+  );
+  // console.log(currentStake);
+
+  const histogramLabels = useMemo(
+    () => Array.from(Array((!!currentStake ? currentStake : []).length).keys()),
+    [currentStake]
+  );
+
+  const histogramData = useMemo(() => {
+    if (!currentStake) return [];
+    return currentStake.map((lotto) => lotto.toNumber());
+  }, [currentStake]);
+
   const [input, setInput] = useState('');
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -30,7 +49,7 @@ const Home: FC = () => {
     setIsModalVisible(false);
     // window.location.href = 'http://localhost:3000/My-Lotto';
     const trans = await lottopusContract?.buyLotto(Number(input), { value: 20 });
-    // console.log(trans);
+    console.log(trans);
   };
 
   const handleCancel = (): void => {
@@ -63,7 +82,8 @@ const Home: FC = () => {
         <Button type="primary">Trigger Random</Button>
       </Row>
       <Announcement />
-      <HistogramChart labels={labels} data={data} />
+
+      <HistogramChart labels={histogramLabels} data={histogramData} />
       <Row justify="center" gutter={8}>
         <Col span={8}>
           <Input placeholder="type 0-99" onChange={handleChange} type="number" />
