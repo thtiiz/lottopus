@@ -51,10 +51,10 @@ const Home: FC = () => {
       <HistogramChart labels={labels} data={data} />
       <Row justify="center">
         <Col span={8}>
-          <Input placeholder="type 0-99" onChange={handleChange} />
+          <Input placeholder="type 0-99" onChange={handleChange} type="number" />
         </Col>
         <Col>
-          <Button type="primary" onClick={showModal}>
+          <Button type="primary" onClick={showModal} disabled={input === ''}>
             Buy
           </Button>
         </Col>
