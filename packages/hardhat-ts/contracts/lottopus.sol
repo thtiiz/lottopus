@@ -20,6 +20,7 @@ contract Lottopus {
     uint256 stakeCount;
     bool isSkipped;
     bool hasPaid;
+    uint256 winningNumber;
   }
 
   uint256 private lastSeededRound;
@@ -44,6 +45,9 @@ contract Lottopus {
   }
 
   function winningNumber(uint256 _round) public view returns (uint256) {
+    if(rounds[_round].hasPaid) {
+      return rounds[_round].winningNumber;
+    }
     require(rounds[_round].seedBlock != 0);
     uint256 hash = uint256(blockhash(rounds[_round].seedBlock));
     require(hash != 0);
@@ -64,21 +68,22 @@ contract Lottopus {
   }
 
   function pay() public {
-    for (uint256 i = 0; i < currentRoundNumber(); i++) {
-      if (rounds[i].hasPaid || rounds[i].isSkipped) {
-        continue;
-      }
-      address[] memory buyers = rounds[i].lottoToBuyers[winningNumber(i)];
-      uint256 seederReward = getRoundPool(i) * (seederSharePercent / 100.0);
-      uint256 payerReward = getRoundPool(i) * (payerSharePercent / 100.0);
-      uint256 payPerStake = (getRoundPool(i) - (seederReward + payerReward)) / buyers.length;
-      payable(rounds[i].seeder).transfer(seederReward);
-      payable(msg.sender).transfer(payerReward);
-      for (uint256 b = 0; b < buyers.length; b++) {
-        payable(buyers[b]).transfer(payPerStake);
-      }
-      rounds[i].hasPaid = true;
+    require(currentRoundNumber() > 0);
+    uint256 previousRoundNum = currentRoundNumber() - 1;
+    round storage previousRound = rounds[previousRoundNum];
+    require(previousRound.seedBlock != 0);
+    require(!previousRound.hasPaid);
+    require(!previousRound.isSkipped);
+    address[] memory buyers = previousRound.lottoToBuyers[winningNumber(previousRoundNum)];
+    uint256 seederReward = getRoundPool(previousRoundNum) * (seederSharePercent / 100.0);
+    uint256 payerReward = getRoundPool(previousRoundNum) * (payerSharePercent / 100.0);
+    uint256 payPerStake = (getRoundPool(previousRoundNum) - (seederReward + payerReward)) / buyers.length;
+    payable(previousRound.seeder).transfer(seederReward);
+    payable(msg.sender).transfer(payerReward);
+    for (uint256 b = 0; b < buyers.length; b++) {
+      payable(buyers[b]).transfer(payPerStake);
     }
+    rounds[i].hasPaid = true;
   }
 
   function seed() public {
@@ -86,8 +91,10 @@ contract Lottopus {
     round storage previousRound = rounds[currentRoundNumber() - 1];
     require(previousRound.seedBlock == 0);
     for (uint256 i = lastSeededRound; i < currentRoundNumber() - 1; i++) {
-      rounds[i].isSkipped = true;
-      previousRound.stakeCount += rounds[i].stakeCount;
+      if (!rounds[i].hasPaid) {
+        rounds[i].isSkipped = true;
+        previousRound.stakeCount += rounds[i].stakeCount;
+      }
     }
     previousRound.seedBlock = block.number;
     lastSeededRound = currentRoundNumber() - 1;
