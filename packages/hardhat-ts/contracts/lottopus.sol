@@ -6,10 +6,12 @@ contract Lottopus {
   uint256 public constant roundLength = 500;
   uint256 public constant lottoPrice = 20;
   uint256 public constant maxLotto = 99;
+  uint256 public constant seederSharePercent = 1;
+  uint256 public constant payerSharePercent = 1;
 
   struct round {
-    uint256 num;
     uint256 seedBlock;
+    address seeder;
     mapping(uint256 => mapping(address => uint256)) lottoToBuyerToStake;
     mapping(uint256 => address[]) lottoToBuyers;
     mapping(address => uint256[]) myRoundLottos;
@@ -19,7 +21,7 @@ contract Lottopus {
   }
 
   uint256 private lastSeededRound;
-  round[] private rounds;
+  round[10000] private rounds;
 
   mapping(address => mapping(uint256 => mapping(uint256 => uint256))) private buyerToRoundToNumberToStake;
 
@@ -63,7 +65,11 @@ contract Lottopus {
         continue;
       }
       address[] memory buyers = rounds[i].lottoToBuyers[winningNumber(i)];
-      uint256 payPerStake = getRoundPool(i) / buyers.length;
+      uint256 seederReward = getRoundPool(i) * (seederSharePercent / 100.0);
+      uint256 payerReward = getRoundPool(i) * (payerSharePercent / 100.0);
+      uint256 payPerStake = (getRoundPool(i) - (seederReward + payerReward)) / buyers.length;
+      payable(rounds[i].seeder).transfer(seederReward);
+      payable(msg.sender).transfer(payerReward);
       for (uint256 b = 0; b < buyers.length; b++) {
         payable(buyers[b]).transfer(payPerStake);
       }
@@ -80,7 +86,8 @@ contract Lottopus {
       previousRound.stakeCount += rounds[i].stakeCount;
     }
     previousRound.seedBlock = block.number;
-    lastSeededRound = previousRound.num;
+    lastSeededRound = currentRoundNumber() - 1;
+    previousRound.seeder = msg.sender;
   }
 
   function getMyLottoNow() public view returns (uint256[] memory) {
