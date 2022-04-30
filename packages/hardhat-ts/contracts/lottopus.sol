@@ -77,8 +77,8 @@ contract Lottopus {
     require(!previousRound.isSkipped, "the round was skipped");
     address[] memory buyers = previousRound.lottoToBuyers[winningNumber(previousRoundNum)];
     if (buyers.length == 0) {
-      previousRound.hasPaid = true;
       previousRound.winningNumber = winningNumber(previousRoundNum);
+      previousRound.hasPaid = true;
       rounds[currentRoundNumber()].stakeCount += previousRound.stakeCount;
       return;
     }
