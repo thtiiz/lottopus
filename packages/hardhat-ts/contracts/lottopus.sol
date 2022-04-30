@@ -45,7 +45,7 @@ contract Lottopus {
   }
 
   function winningNumber(uint256 _round) public view returns (uint256) {
-    if(rounds[_round].hasPaid) {
+    if (rounds[_round].hasPaid) {
       return rounds[_round].winningNumber;
     }
     require(rounds[_round].seedBlock != 0);
@@ -84,7 +84,7 @@ contract Lottopus {
     for (uint256 b = 0; b < buyers.length; b++) {
       payable(buyers[b]).transfer(payPerStake);
     }
-    rounds[i].hasPaid = true;
+    previousRound.hasPaid = true;
   }
 
   function seed() public {
