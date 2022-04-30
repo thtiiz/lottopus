@@ -122,10 +122,10 @@ contract Lottopus {
     return rounds[currentRoundNumber()].stakeCount * lottoPrice;
   }
 
-  function getStakes(uint256 round) public view returns (uint256[] memory) {
+  function getCurrentStakes() public view returns (uint256[] memory) {
     uint256[] memory ret = new uint256[](maxLotto + 1);
     for (uint256 i = 0; i <= maxLotto; i++) {
-      ret[i] = rounds[round].lottoToBuyers[i].length;
+      ret[i] = rounds[currentRoundNumber()].lottoToBuyers[i].length;
     }
     return ret;
   }
