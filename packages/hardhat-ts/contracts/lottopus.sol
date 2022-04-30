@@ -14,9 +14,11 @@ contract Lottopus {
     mapping(uint256 => address[]) lottoToBuyers;
     mapping(address => uint256[]) myRoundLottos;
     uint256 stakeCount;
+    bool isSkipped;
     bool hasPaid;
   }
 
+  uint256 private lastSeededRound;
   round[] private rounds;
 
   mapping(address => mapping(uint256 => mapping(uint256 => uint256))) private buyerToRoundToNumberToStake;
@@ -57,7 +59,7 @@ contract Lottopus {
 
   function pay() public {
     for (uint256 i = 0; i < currentRoundNumber(); i++) {
-      if (rounds[i].hasPaid) {
+      if (rounds[i].hasPaid || rounds[i].isSkipped) {
         continue;
       }
       address[] memory buyers = rounds[i].lottoToBuyers[winningNumber(i)];
@@ -70,14 +72,15 @@ contract Lottopus {
   }
 
   function seed() public {
-    uint256 offset = 0;
-    for (uint256 i = 0; i < currentRoundNumber(); i++) {
-      if (rounds[i].seedBlock != 0) {
-        continue;
-      }
-      rounds[i].seedBlock == block.number + offset;
-      offset++;
+    requires(currentRoundNumber() > 0);
+    round previousRound = rounds[currentRoundNumber()-1];
+    requires(previousRound.seedBlock == 0);
+    for (uint256 i = lastSeededRound; i < currentRoundNumber()-1; i++) {
+      rounds[i].isSkipped = true;
+      previousRound.stakeCount += rounds[i].stakeCount;
     }
+    previousRound.seedBlock = block.number;
+    lastSeededRound = previousRound;
   }
 
   function getMyLottoNow() public view returns (uint256[] memory) {
