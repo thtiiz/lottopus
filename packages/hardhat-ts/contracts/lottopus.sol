@@ -48,7 +48,8 @@ contract Lottopus {
     if (rounds[_round].hasPaid) {
       return rounds[_round].winningNumber;
     }
-    require(rounds[_round].seedBlock != 0);
+    require(!rounds[_round].isSkipped, "this round was skipped");
+    require(rounds[_round].seedBlock != 0, "winning number has not been decided");
     uint256 hash = uint256(blockhash(rounds[_round].seedBlock));
     require(hash != 0);
     return hash % (maxLotto + 1);
@@ -68,14 +69,14 @@ contract Lottopus {
   }
 
   function pay() public {
-    require(currentRoundNumber() > 0);
+    require(currentRoundNumber() > 0, "still round zero");
     uint256 previousRoundNum = currentRoundNumber() - 1;
     round storage previousRound = rounds[previousRoundNum];
-    require(previousRound.seedBlock != 0);
-    require(!previousRound.hasPaid);
-    require(!previousRound.isSkipped);
+    require(previousRound.seedBlock != 0, "must seed first");
+    require(!previousRound.hasPaid, "already paid");
+    require(!previousRound.isSkipped, "the round was skipped");
     address[] memory buyers = previousRound.lottoToBuyers[winningNumber(previousRoundNum)];
-    require(buyers.length > 0);
+    require(buyers.length > 0, "noone won");
     uint256 seederReward = getRoundPool(previousRoundNum) * (seederSharePercent / 100.0);
     uint256 payerReward = getRoundPool(previousRoundNum) * (payerSharePercent / 100.0);
     uint256 payPerStake = (getRoundPool(previousRoundNum) - (seederReward + payerReward)) / buyers.length;
@@ -88,9 +89,9 @@ contract Lottopus {
   }
 
   function seed() public {
-    require(currentRoundNumber() > 0);
+    require(currentRoundNumber() > 0, "still round zero");
     round storage previousRound = rounds[currentRoundNumber() - 1];
-    require(previousRound.seedBlock == 0);
+    require(previousRound.seedBlock == 0, "was already seeded");
     for (uint256 i = lastSeededRound; i < currentRoundNumber() - 1; i++) {
       if (!rounds[i].hasPaid) {
         rounds[i].isSkipped = true;
