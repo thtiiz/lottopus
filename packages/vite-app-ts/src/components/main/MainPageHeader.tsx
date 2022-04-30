@@ -34,7 +34,7 @@ export const MainPageHeader: FC<IMainPageHeaderProps> = (props) => {
     <>
       <div>
         <PageHeader
-          title="🏭 Scaffold-Eth"
+          title="Lottopus"
           subTitle={
             <span>
               v2.1 - [

@@ -1,5 +1,5 @@
-import { parseEther } from '@ethersproject/units';
-import { Button } from 'antd';
+// import { parseEther } from '@ethersproject/units';
+// import { Button } from 'antd';
 import { transactor } from 'eth-components/functions';
 import { EthComponentsSettingsContext } from 'eth-components/models';
 import { useBalance } from 'eth-hooks';
@@ -54,7 +54,7 @@ export const FaucetHintButton: FC<IFaucetButton> = (props) => {
   const [faucetAvailable] = useDebounce(isAvailable, 500, {
     trailing: true,
   });
-  const [faucetClicked, setFaucetClicked] = useState(false);
+  const [faucetClicked] = useState(false);
 
   const faucetHint = useMemo(() => {
     const min = parseFloat(utils.formatUnits(yourLocalBalance?.toBigInt() ?? 0, 'ether'));
@@ -62,24 +62,7 @@ export const FaucetHintButton: FC<IFaucetButton> = (props) => {
     const allowFaucet = faucetAvailable && !faucetClicked && lowFunds;
 
     if (allowFaucet && ethersContext?.account != null) {
-      return (
-        <div style={{ paddingTop: 10, paddingLeft: 10 }}>
-          <Button
-            type="primary"
-            onClick={(): void => {
-              if (faucetTx && ethersContext?.account != null) {
-                faucetTx({
-                  to: ethersContext?.account,
-                  value: parseEther('0.01').toHexString(),
-                })
-                  .then(() => setFaucetClicked(true))
-                  .catch(() => setFaucetClicked(false));
-              }
-            }}>
-            💰 Grab funds from the faucet ⛽️
-          </Button>
-        </div>
-      );
+      return null;
     } else {
       return <></>;
     }

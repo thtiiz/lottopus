@@ -6,6 +6,7 @@ import React, { FC, useState } from 'react';
 
 import { useAppContracts } from '../contractContext';
 import { HistogramChart } from '../main/HistogramChart';
+import Announcement from './Announcement';
 
 const { Title } = Typography;
 
@@ -61,7 +62,7 @@ const Home: FC = () => {
       <Row justify="center" style={{ paddingBottom: '8px', paddingTop: '8px' }}>
         <Button type="primary">Trigger Random</Button>
       </Row>
-
+      <Announcement />
       <HistogramChart labels={labels} data={data} />
       <Row justify="center" gutter={8}>
         <Col span={8}>

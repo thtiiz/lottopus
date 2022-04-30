@@ -2,6 +2,7 @@ import { Card, Row, Col, Typography, Divider, Image } from 'antd';
 import React, { FC } from 'react';
 
 import ball from '../../images/blue.png';
+import PrizeBox from '../prizeBox/PrizeBox';
 
 const { Title, Text } = Typography;
 
@@ -9,18 +10,18 @@ const Announcement: FC = () => {
   return (
     <div>
       <Card style={{}}>
-        <Row>
+        <Row justify="center">
           <Title level={2} style={{ fontWeight: 'bold' }}>
             Prize Announcement
           </Title>
         </Row>
-        <Row>
+        <Row justify="center">
           <Title level={3} style={{ color: '#00BFFF' }}>
             Drawn Apr 30, 2022, 7:00 AM
           </Title>
         </Row>
         <Divider />
-        <Row gutter={16}>
+        <Row gutter={16} justify="center">
           <Col>
             <Text strong style={{ fontSize: '18px' }}>
               Winning Number:
@@ -54,36 +55,22 @@ const Announcement: FC = () => {
           </Col>
         </Row>
         <Divider />
-
-        <Row justify="space-around">
+        <Row justify="center">
           <Col span={8}>
-            <Row>
-              <Title level={3}>Prize pot</Title>
+            <Row justify="center">
+              <Title level={3}>Prize pool</Title>
             </Row>
-            <Row>
-              <Title style={{ color: '#00BFFF' }}>123132 BHT</Title>
+            <Row justify="center">
+              <Title style={{ color: '#00BFFF' }}>100 ETH</Title>
             </Row>
-            <Row>
+            <Row justify="center">
               <Title level={3}>Total players: 77</Title>
             </Row>
           </Col>
-          <Col span={12}>
-            <Row justify="space-around">
-              <Col>
-                <Title level={4}>1 st</Title>
-                <Title level={4}>400 THB</Title>
-              </Col>
-              <Col>
-                <Title level={4}>2 nd</Title>
-                <Title level={4}>100 THB</Title>
-              </Col>
-              <Col>
-                <Title level={4}>3 rd</Title>
-                <Title level={4}>100 THB</Title>
-              </Col>
-            </Row>
-          </Col>
         </Row>
+        <Divider />
+        {/* <PrizeBox gotPrize={true} /> */}
+        <PrizeBox gotPrize={false} />
       </Card>
     </div>
   );

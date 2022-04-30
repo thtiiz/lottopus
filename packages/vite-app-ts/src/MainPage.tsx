@@ -1,5 +1,5 @@
 import '~~/styles/main-page.css';
-import { GenericContract } from 'eth-components/ant';
+// import { GenericContract } from 'eth-components/ant';
 import { useBalance, useEthersAdaptorFromProviderOrSigners } from 'eth-hooks';
 import { useEthersContext } from 'eth-hooks/context';
 import { useDexEthPrice } from 'eth-hooks/dapps';
@@ -10,7 +10,6 @@ import { NETWORKS } from 'scaffold-common/src/constants';
 
 import { MainPageHeader, createPagesAndTabs, TContractPageList } from './components/main';
 import { useScaffoldHooksExamples as useScaffoldHooksExamples } from './components/main/hooks/useScaffoldHooksExamples';
-import Announcement from './components/pages/Announcement';
 import Home from './components/pages/Home';
 import MyLotto from './components/pages/MyLotto';
 
@@ -72,8 +71,8 @@ export const MainPage: FC = () => {
   // -----------------------------
 
   // init contracts
-  const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
-  const mainnetDai = useAppContracts('DAI', NETWORKS.mainnet.chainId);
+  // const lottopusContract = useAppContracts('Lottopus', ethersContext.chainId);
+  // const mainnetDai = useAppContracts('DAI', NETWORKS.mainnet.chainId);
 
   // 📟 Listen for broadcast events
   // const [setPurposeEvents] = useEventListener(yourContract, 'SetPurpose', 0);
@@ -85,7 +84,7 @@ export const MainPage: FC = () => {
   const [ethPrice] = useDexEthPrice(scaffoldAppProviders.mainnetAdaptor?.provider, scaffoldAppProviders.targetNetwork);
 
   // 💰 this hook will get your balance
-  const [yourCurrentBalance] = useBalance(ethersContext.account);
+  // const [yourCurrentBalance] = useBalance(ethersContext.account);
 
   const [route, setRoute] = useState<string>('');
   useEffect(() => {
@@ -106,21 +105,17 @@ export const MainPage: FC = () => {
         name: 'My-Lotto',
         element: <MyLotto />,
       },
-      {
-        name: 'Announcement',
-        element: <Announcement />,
-      },
-      {
-        name: 'Lottopus',
-        element: (
-          <GenericContract
-            contractName="Lottopus"
-            contract={lottopusContract}
-            mainnetAdaptor={scaffoldAppProviders.mainnetAdaptor}
-            blockExplorer={scaffoldAppProviders.targetNetwork.blockExplorer}
-          />
-        ),
-      },
+      // {
+      //   name: 'Lottopus',
+      //   element: (
+      //     <GenericContract
+      //       contractName="Lottopus"
+      //       contract={lottopusContract}
+      //       mainnetAdaptor={scaffoldAppProviders.mainnetAdaptor}
+      //       blockExplorer={scaffoldAppProviders.targetNetwork.blockExplorer}
+      //     />
+      //   ),
+      // },
     ],
   };
   const { pageElements, menuElement } = createPagesAndTabs(pageList, route, setRoute);
