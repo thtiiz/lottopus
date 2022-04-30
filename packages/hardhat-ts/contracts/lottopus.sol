@@ -4,7 +4,7 @@ pragma solidity >=0.8.0 <0.9.0;
 contract Lottopus {
   event BuyLotto(address indexed buyer);
 
-  uint256 private tZero;
+  uint private tZero;
   uint256 public constant roundLength = 500;
   uint256 public constant lottoPrice = 20;
   uint256 public constant maxLotto = 99;
@@ -133,5 +133,9 @@ contract Lottopus {
 
   function blockTimestamp() public view returns (uint) {
     return block.timestamp;
+  }
+
+  function tZero() public view returns (uint) {
+    return tZero;
   }
 }
