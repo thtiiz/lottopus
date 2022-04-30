@@ -15,6 +15,7 @@ contract Lottopus {
     mapping(address => uint256[]) myRoundLottos;
     uint256 stakeCount;
     bool hasPaid;
+    uint256 rewardPrice;
   }
 
   round[] private rounds;
@@ -69,7 +70,7 @@ contract Lottopus {
     }
   }
 
-  function seed() public {
+  function seed() public view {
     uint256 offset = 0;
     for (uint256 i = 0; i < currentRoundNumber(); i++) {
       if (rounds[i].seedBlock != 0) {
@@ -90,5 +91,9 @@ contract Lottopus {
 
   function getMyLottoByRound(uint256 r) public view returns (uint256[] memory) {
     return rounds[r].myRoundLottos[msg.sender];
+  }
+
+  function getRewardByRound(uint256 r) public view returns (uint256) {
+    return rounds[r].rewardPrice;
   }
 }
