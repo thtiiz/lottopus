@@ -64,7 +64,7 @@ contract Lottopus {
         continue;
       }
       address[] memory buyers = rounds[i].lottoToBuyers[winningNumber(i)];
-      uint256 payPerStake = (rounds[i].stakeCount * lottoPrice) / buyers.length;
+      uint256 payPerStake = getRoundPool(i) / buyers.length;
       for (uint256 b = 0; b < buyers.length; b++) {
         payable(buyers[b]).transfer(payPerStake);
       }
@@ -96,7 +96,7 @@ contract Lottopus {
     return rounds[r].myRoundLottos[msg.sender];
   }
 
-  function getRewardByRound(uint256 r) public view returns (uint256) {
-    return rounds[r].rewardPrice;
+  function getRoundPool(uint256 r) public view returns (uint256) {
+    return rounds[r].stakeCount * lottoPrice;
   }
 }
