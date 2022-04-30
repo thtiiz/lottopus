@@ -22,7 +22,7 @@ contract Lottopus {
   mapping(address => mapping(uint256 => mapping(uint256 => uint256))) private buyerToRoundToNumberToStake;
 
   constructor() {
-    tZero = now;
+    tZero = block.timestamp;
   }
 
   function roundStartTime(uint256 num) public view returns (uint256) {
@@ -34,7 +34,7 @@ contract Lottopus {
   }
 
   function currentRoundNumber() public view returns (uint256) {
-    return (now - tZero) / roundLength;
+    return (block.timestamp - tZero) / roundLength;
   }
 
   function winningNumber(uint256 _round) public view returns (uint256) {
