@@ -81,8 +81,12 @@ contract Lottopus {
     }
   }
 
-  function getMyLottoNow() public view returns (mapping(uint256 => uint256) memory) {
-    return buyerToRoundToNumberToStake[msg.sender][currentRoundNumber];
+  function getMyLottoNow() public view returns (uint256[] memory) {
+    uint256[] ret = new uint256[](maxLotto+1);
+    for (uint i = 0; i <= maxLotto; i++) {
+      ret[i] = rounds[currentRoundNumber()].lottoToBuyers[i][msg.sender];
+    }
+    return ret;
   }
 
   function getAllLotto() public view returns (round[] memory) {
