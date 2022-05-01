@@ -14,6 +14,8 @@ import { getNetworks } from 'scaffold-common/src/functions';
 
 import { getMnemonic } from './tasks/functions/mnemonic';
 
+import '@atixlabs/hardhat-time-n-mine';
+
 // this loads the .env file into process.env
 envConfig({ path: '../vite-app-ts/.env' });
 

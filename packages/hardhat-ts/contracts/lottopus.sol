@@ -5,8 +5,8 @@ contract Lottopus {
   event BuyLotto(address indexed buyer);
 
   uint256 private tZero;
-  uint256 public constant roundLength = 30;
-  uint256 public constant lottoPrice = 20;
+  uint256 public constant roundLength = 120;
+  uint256 public constant lottoPrice = 20000000000000000000;
   uint256 public constant maxLotto = 99;
   uint256 public constant seederSharePercent = 1;
   uint256 public constant payerSharePercent = 1;
@@ -40,7 +40,7 @@ contract Lottopus {
     return ((num + 1) * roundLength) + tZero;
   }
 
-  function currentRoundNumber() public returns (uint256) {
+  function currentRoundNumber() public view returns (uint256) {
     return (block.timestamp - tZero) / roundLength;
   }
 
@@ -138,9 +138,5 @@ contract Lottopus {
 
   function blockTimestamp() public view returns (uint256) {
     return block.timestamp;
-  }
-
-  function tZero() public view returns (uint256) {
-    return tZero;
   }
 }

@@ -80,5 +80,8 @@
          "yarn workspace @scaffold-eth/hardhat format",
          "yarn workspace @scaffold-eth/hardhat solhint --fix"
       ]
+   },
+   "dependencies": {
+      "@atixlabs/hardhat-time-n-mine": "^0.0.5"
    }
 }

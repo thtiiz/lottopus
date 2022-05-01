@@ -55,7 +55,7 @@ const Home: FC = () => {
   const handleOk = async (): Promise<void> => {
     setIsModalVisible(false);
     // window.location.href = 'http://localhost:3000/My-Lotto';
-    const trans = await lottopusContract?.buyLotto(Number(input), { value: 20 });
+    const trans = await lottopusContract?.buyLotto(Number(input), { value: '20000000000000000000' });
     console.log(trans);
   };
 
@@ -74,12 +74,18 @@ const Home: FC = () => {
   const { Countdown } = Statistic;
 
   const [currentRoundNumber] = useContractReader(lottopusContract, lottopusContract?.currentRoundNumber, [], undefined);
+  // const currentRoundNumber = new BigNumber(0);
   const [endTime] = useContractReader(
     lottopusContract,
     lottopusContract?.roundEndTime,
     [currentRoundNumber ? currentRoundNumber : 0],
     undefined
   );
+
+  const [blockTimestamp] = useContractReader(lottopusContract, lottopusContract?.blockTimestamp, [], undefined);
+
+  console.log(blockTimestamp?.toNumber());
+  console.log(currentRoundNumber?.toNumber());
 
   const safeEndTime = !!endTime ? endTime.toNumber() * 1000 : 0;
   return (
@@ -103,7 +109,6 @@ const Home: FC = () => {
         </Button>
       </Row>
       <Announcement />
-
       <HistogramChart labels={histogramLabels} data={histogramData} />
       <Row justify="center" gutter={8}>
         <Col span={8}>

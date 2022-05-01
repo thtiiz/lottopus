@@ -17,13 +17,15 @@ const Announcement: FC = () => {
 
   const [currentRoundNumber] = useContractReader(lottopusContract, lottopusContract?.currentRoundNumber, [], undefined);
 
-  const [winningNumber] = useContractReader(
-    lottopusContract,
-    lottopusContract?.winningNumber,
-    [currentRoundNumber ? currentRoundNumber : 0],
-    undefined
-  );
+  const curRound = () => {
+    if (!currentRoundNumber) {
+      return 0;
+    }
 
+    return currentRoundNumber.toNumber() > 0 ? currentRoundNumber.toNumber() - 1 : 0;
+  };
+
+  const [winningNumber] = useContractReader(lottopusContract, lottopusContract?.winningNumber, [curRound()], undefined);
   const [endTime] = useContractReader(
     lottopusContract,
     lottopusContract?.roundEndTime,
@@ -90,7 +92,7 @@ const Announcement: FC = () => {
               <Title level={3}>Prize pool</Title>
             </Row>
             <Row justify="center">
-              <Title style={{ color: '#00BFFF' }}>{!!currentPool ? currentPool.toNumber() : 0} ETH</Title>
+              <Title style={{ color: '#00BFFF' }}>{!!currentPool ? currentPool.toString() : 0} Wei</Title>
             </Row>
             {/* <Row justify="center">
               <Title level={3}>Total players: 77</Title>
